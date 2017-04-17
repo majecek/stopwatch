@@ -49,24 +49,28 @@ export default class Stopwatch extends Component {
       <TouchableHighlight
         underlayColor='gray'
         onPress={this.handleStartPress}
-        style={[styles.button, styles.startButton]} >
+        style={[styles.button, styles.startButton]}>
         <Text>{this.state.running ? 'Stop' : 'Start'}</Text>
       </TouchableHighlight>
     )
   }
 
   handleStartPress = () => {
+
+    if (this.state.running) {
+      clearInterval(this.interval)
+      this.setState({running: false})
+      return
+    }
+
     const startTime = new Date()
     const running = !this.state.running
     console.log('running', running)
-    this.setState({
-      running: running
-    })
-    if (running) {
-      setInterval(() => this.setState({
-        timeElapsed: new Date() - startTime
-      }), 30)
-    }
+
+    this.interval = setInterval(() => this.setState({
+      timeElapsed: new Date() - startTime,
+      running: true
+    }), 30)
   }
 
   lapButton () {
@@ -111,7 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 60
   },
   button: {
-    borderWidth:2,
+    borderWidth: 2,
     height: 100,
     width: 100,
     borderRadius: 50,
